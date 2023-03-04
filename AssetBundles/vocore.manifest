@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 3468334669
+CRC: 3244519942
 Hashes:
   AssetFileHash:
     serializedVersion: 2
@@ -13,6 +13,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/AssetBundleBuild/Shaders/Animated.shader
-- Assets/AssetBundleBuild/Shaders/AnimatedInstanced.shader
+- Assets/VocoreAssets/Shaders/Animated.shader
+- Assets/VocoreAssets/Shaders/AnimatedInstanced.shader
 Dependencies: []
