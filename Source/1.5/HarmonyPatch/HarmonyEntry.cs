@@ -1,23 +1,21 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
+
+using HarmonyLib;
 using Verse;
 
-namespace MuzzleFlash
+namespace MuzzleFlash.Patch
 {
     [StaticConstructorOnStartup]
-    public static class HarmonyEntry
+    internal static class HarmonyEntry
     {
         static HarmonyEntry()
         {
-            Harmony harmony = new Harmony("AEF.MuzzleFlash");
+            Harmony harmony = new Harmony("Vodka.MuzzleFlash");
             harmony.PatchAll();
         }
-
     }
 }
