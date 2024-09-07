@@ -26,16 +26,6 @@ namespace MuzzleFlash
         }
 
         public T[] Raw => _innerArray;
-        public unsafe T* PtrHead
-        {
-            get
-            {
-                fixed(T* result = &_innerArray[0])
-                {
-                    return result;
-                }
-            }
-        }
 
         public StructuredBuffer(int size)
         {

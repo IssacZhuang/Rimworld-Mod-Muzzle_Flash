@@ -12,28 +12,34 @@ namespace MuzzleFlash
 {
     public class MapComponent_MuzzleFlashManager : MapComponent
     {
-        private readonly LinkedList<MuzzleFlashEntity> _entities;
+        //private readonly LinkedList<MuzzleFlashEntity> _entities;
+        private readonly List<MuzzleFlashEntity> _entities;
         public MapComponent_MuzzleFlashManager(Map map) : base(map)
         {
-            _entities = new LinkedList<MuzzleFlashEntity>();
+            _entities = new List<MuzzleFlashEntity>();
         }
 
         public override void MapComponentTick()
         {
             base.MapComponentTick();
-            var pointer = _entities.First;
-            while (pointer != null)
+            //remove dead entities, 
+            //just replace the dead entity with the last entity and remove the last entity
+            int length = _entities.Count;
+            int i = 0;
+            while (i < length)
             {
-                if (!pointer.Value.IsAlive)
+                var entity = _entities[i];
+                if (!entity.IsAlive)
                 {
-                    var tmp = pointer.Next;
-                    _entities.Remove(pointer);
-                    pointer = tmp;
+                    _entities[i] = _entities[length - 1];
+                    _entities.RemoveAt(length - 1);
+                    length--;
                 }
-                if (pointer != null)
+                else
                 {
-                    pointer.Value.Tick();
-                    pointer = pointer.Next;
+                    entity.Tick();
+                    _entities[i] = entity;//it a struct, so we need to replace it
+                    i++;
                 }
             }
         }
@@ -42,19 +48,24 @@ namespace MuzzleFlash
         {
             if (WorldRendererUtility.WorldRenderedNow || Find.CurrentMap != this.map) return;
 
-            var pointer = _entities.First;
-            while (pointer != null)
+            // var pointer = _entities.First;
+            // while (pointer != null)
+            // {
+            //     var entity = pointer.Value;
+            //     AnimatedRenderManager.Default.AddInstance(entity.def.RenderID, entity.position, entity.rotation, entity.size, Color.white, entity.frame);
+            //     pointer = pointer.Next;
+            // }
+            for (int i = 0; i < _entities.Count; i++)
             {
-                var entity = pointer.Value;
+                var entity = _entities[i];
                 AnimatedRenderManager.Default.AddInstance(entity.def.RenderID, entity.position, entity.rotation, entity.size, Color.white, entity.frame);
-                pointer = pointer.Next;
             }
             AnimatedRenderManager.Default.Draw();
         }
 
         public void RegisterEntity(MuzzleFlashEntity entity)
         {
-            _entities.AddLast(entity);
+            _entities.Add(entity);
         }
     }
 }

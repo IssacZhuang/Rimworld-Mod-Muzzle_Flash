@@ -42,8 +42,6 @@ namespace MuzzleFlash
             _rotationBuffer = new NativeBuffer<Quaternion>(InstancedRenderer.MAX_COUNT_IN_BATCH);
             _scaleBuffer = new NativeBuffer<Vector3>(InstancedRenderer.MAX_COUNT_IN_BATCH);
 
-            InitializeJob();
-
             _count = 0;
         }
 
@@ -71,29 +69,29 @@ namespace MuzzleFlash
             _count++;
         }
 
-        protected void UpdateData(int start, int length, StructuredBuffer<Matrix4x4> matrices, MaterialPropertyBlock propertyBlock)
+        protected unsafe void UpdateData(int start, int length, StructuredBuffer<Matrix4x4> matrices, MaterialPropertyBlock propertyBlock)
         {
             if (start > 0) return; // TODO: warning
-            JobHandle handle = _jobMatrices.Schedule(length, 1);
-            UpdateMaterialProperty(propertyBlock);
-            handle.Complete();
-            ResetBuffer();
+            fixed (Matrix4x4* ptr = matrices.Raw)
+            {
+                _jobMatrices = new JobCalcMatricesUnsafe
+                {
+                    positions = _positionBuffer.Raw,
+                    rotations = _rotationBuffer.Raw,
+                    scales = _scaleBuffer.Raw,
+                    matrices = ptr
+                };
+                JobHandle handle = _jobMatrices.Schedule(length, 1);
+                UpdateMaterialProperty(propertyBlock);
+                handle.Complete();
+                ResetBuffer();
+            }
+
         }
 
         protected virtual void UpdateMaterialProperty(MaterialPropertyBlock propertyBlock)
         {
 
-        }
-
-        private unsafe void InitializeJob()
-        {
-            _jobMatrices = new JobCalcMatricesUnsafe
-            {
-                positions = _positionBuffer.Raw,
-                rotations = _rotationBuffer.Raw,
-                scales = _scaleBuffer.Raw,
-                matrices = _renderer.MatrixBuffer.PtrHead
-            };
         }
 
         public void Dispose()

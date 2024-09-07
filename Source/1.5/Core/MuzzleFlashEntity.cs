@@ -10,9 +10,10 @@ using MuzzleFlash;
 
 namespace MuzzleFlash
 {
-    public class MuzzleFlashEntity
+    //replace class with struct for continuous memory allocation
+    public struct MuzzleFlashEntity
     {
-        private int _lifeTicks = 60;
+        private int _lifeTicks;
 
         public readonly MuzzleFlashDef def;
 
