@@ -12,8 +12,11 @@
     <PackageReference Include="Lib.Harmony" Version="2.3.3" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="vocore" />
-    <EmbeddedResource Include="vocore.manifest" />
+    <EmbeddedResource Include="shaders-windows" />
+    <EmbeddedResource Include="shaders-linux" />
+    <EmbeddedResource Include="shaders-macos" />
+
+
   </ItemGroup>
 
 </Project>

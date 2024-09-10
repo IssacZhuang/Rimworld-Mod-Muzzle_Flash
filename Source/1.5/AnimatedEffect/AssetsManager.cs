@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using UnityEngine;
+using Verse;
 
 namespace MuzzleFlash
 {
     public class AssetsManager
     {
-        private const string EmbeddedAssetBundlePath = "MuzzleFlash.vocore";
+        //private const string EmbeddedAssetBundlePath = "MuzzleFlash.vocore";
+        private const string EmbeddedAssetBundlePath = "MuzzleFlash.shaders";
         private static AssetsManager _instance;
         public static AssetsManager Default
         {
@@ -26,7 +28,6 @@ namespace MuzzleFlash
         private readonly Dictionary<string, Shader> _shaders = new Dictionary<string, Shader>();
         private readonly List<Material> _materials = new List<Material>();
 
-        private Shader _animated;
         private Shader _animatedInstanced;
         private AssetBundle _assets;
         private bool _initialized = false;
@@ -36,7 +37,10 @@ namespace MuzzleFlash
             if (_initialized) return;
             _initialized = true;
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = currentAssembly.GetManifestResourceStream(EmbeddedAssetBundlePath))
+            //string shaderBundleName = EmbeddedAssetBundlePath;
+            string shaderBundleName = EmbeddedAssetBundlePath + GetPlatformPostfix();
+            Log.Message($"Loading asset bundle {shaderBundleName}");
+            using (Stream stream = currentAssembly.GetManifestResourceStream(shaderBundleName))
             {
                 LoadAssetBundle(AssetBundle.LoadFromStream(stream));
             }
@@ -49,6 +53,7 @@ namespace MuzzleFlash
             this._assets = assets;
             foreach (var shader in assets.LoadAllAssets<Shader>())
             {
+                Log.Message($"Loaded shader {shader.name}");
                 _shaders.Add(shader.name, shader);
             }
         }
@@ -100,23 +105,34 @@ namespace MuzzleFlash
             return result;
         }
 
-        public Shader ShaderAnimated
+
+        public Shader ShaderAnimatedAdditiveInstanced
         {
             get
             {
-                if (_animated == null) _animated = GetShader("Unlit/Animated");
-                if (_animated == null) ExceptionRendering.ShaderNotFound("Unlit/Animated");
-                return _animated;
+                if (_animatedInstanced == null) _animatedInstanced = GetShader("Unlit/AnimatedAdditiveInstanced");
+                if (_animatedInstanced == null) ExceptionRendering.ShaderNotFound("Unlit/AnimatedAdditiveInstanced");
+                // if (_animatedInstanced == null) _animatedInstanced = GetShader("Unlit/AnimatedInstanced");
+                // if (_animatedInstanced == null) ExceptionRendering.ShaderNotFound("Unlit/AnimatedInstanced");
+                return _animatedInstanced;
             }
         }
 
-        public Shader ShaderAnimatedInstanced
+        private string GetPlatformPostfix()
         {
-            get
+            switch (Application.platform)
             {
-                if (_animatedInstanced == null) _animatedInstanced = GetShader("Unlit/AnimatedInstanced");
-                if (_animatedInstanced == null) ExceptionRendering.ShaderNotFound("Unlit/AnimatedInstanced");
-                return _animatedInstanced;
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.WindowsEditor:
+                    return "-windows";
+                case RuntimePlatform.OSXPlayer:
+                case RuntimePlatform.OSXEditor:
+                    return "-macos";
+                case RuntimePlatform.LinuxPlayer:
+                case RuntimePlatform.LinuxEditor:
+                    return "-linux";
+                default:
+                    return "-unknown";
             }
         }
     }

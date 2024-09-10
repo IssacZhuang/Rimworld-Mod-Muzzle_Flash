@@ -50,7 +50,7 @@ namespace MuzzleFlash
 
         public void InitializeMaterial()
         {
-            Shader shader = AssetsManager.Default.ShaderAnimatedInstanced;
+            Shader shader = AssetsManager.Default.ShaderAnimatedAdditiveInstanced;
             Material mat = AssetsManager.Default.GetMaterial(shader, Texture, splits, lightIntensity);
             mat.renderQueue = (int)RenderQueue.Transparent + 200;
             _renderID = AnimatedRenderManager.Default.GetRendererID(MeshPool.plane10, mat);
