@@ -163,6 +163,19 @@
 					</value>
 				</li>
 
+				<li Class="SafePatcher.PatchOperationSetModExtension">
+					<xpath>Defs/ThingDef[defName="CE_MechanoidMinigun"]</xpath>
+					<value>
+						<li Class="MuzzleFlash.MuzzleFlashProps">
+							<def>MF_StandardMuzzleFalsh</def>
+							<drawSize>(1,1)</drawSize>
+							<offsets>
+								<li>(0.65,0)</li>
+							</offsets>
+						</li>
+					</value>
+				</li>
+
 				<!--Turrets-->
 
 				<li Class="SafePatcher.PatchOperationSetModExtension">
