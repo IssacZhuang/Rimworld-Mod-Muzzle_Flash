@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Burst;
 
 namespace MuzzleFlash
 {
+    // [BurstCompile]
     public unsafe struct JobCalcMatricesUnsafe : IJobParallelFor
     {
         [NativeDisableUnsafePtrRestriction]

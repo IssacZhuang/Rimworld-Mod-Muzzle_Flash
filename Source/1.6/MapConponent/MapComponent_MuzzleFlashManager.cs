@@ -46,7 +46,7 @@ namespace MuzzleFlash
 
         public override void MapComponentUpdate()
         {
-            if (WorldRendererUtility.WorldRenderedNow || Find.CurrentMap != this.map) return;
+            if (WorldRendererUtility.WorldRendered || Find.CurrentMap != this.map) return;
 
             // var pointer = _entities.First;
             // while (pointer != null)

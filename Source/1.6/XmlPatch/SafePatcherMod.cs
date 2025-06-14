@@ -33,7 +33,7 @@ namespace SafePatcher
             }
         }
 
-        [DebugAction("Muzzle Flash", "Reload Safe Patcher", false, false, false, false, 0, false, allowedGameStates = AllowedGameStates.Playing, displayPriority = 500)]
+        [DebugAction("Muzzle Flash", "Reload Safe Patcher", allowedGameStates = AllowedGameStates.Playing, displayPriority = 500)]
 		private static void TryPlaceNearThing()
 		{
 			ReloadPatch();
