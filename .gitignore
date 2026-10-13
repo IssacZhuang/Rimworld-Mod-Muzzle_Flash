@@ -3,3 +3,6 @@ bin
 obj
 net472
 .vscode
+# Waylith runtime asset bake cache
+Assets.zip
+Assets.zip.*
