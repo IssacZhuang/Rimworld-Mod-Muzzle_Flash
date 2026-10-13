@@ -15,16 +15,4 @@
     </shaderProgram>
   </ShaderDef>
 
-  <!-- DevMode 诊断用: 品红测试块, 用于验证绘制管线与 SSBO 数据链路 -->
-  <ShaderDef>
-    <defName>MuzzleFlashDebugSolid</defName>
-    <shaderProgram>
-      <vertexShaderFileName>MuzzleFlash.vert.glsl</vertexShaderFileName>
-      <fragmentShaderFileName>MuzzleFlashDebug.frag.glsl</fragmentShaderFileName>
-      <blendMode>Additive</blendMode>
-      <depthWrite>false</depthWrite>
-      <renderQueue>3151</renderQueue>
-    </shaderProgram>
-  </ShaderDef>
-
 </Defs>

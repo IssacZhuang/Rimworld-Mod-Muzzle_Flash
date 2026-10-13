@@ -96,22 +96,5 @@ namespace MuzzleFlash
                 return _animatedInstanced;
             }
         }
-
-        private const string DebugShaderDefName = "MuzzleFlashDebugSolid";
-        private Material _debugMaterial;
-
-        public Material GetOrCreateDebugMaterial()
-        {
-            if (_debugMaterial != null) return _debugMaterial;
-
-            ShaderDef def = DefDatabase<ShaderDef>.GetNamedSilentFail(DebugShaderDefName);
-            if (def == null)
-            {
-                Log.Error($"[Muzzle Flash] ShaderDef '{DebugShaderDefName}' not found.");
-                return null;
-            }
-            _debugMaterial = UtilsMaterial.CreateMaterial(def.Shader, true);
-            return _debugMaterial;
-        }
     }
 }

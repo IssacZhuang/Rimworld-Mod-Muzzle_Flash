@@ -37,16 +37,7 @@ namespace MuzzleFlash
             // UpdateData 在 ResetBuffer 之前调用, 此时 _count 即本批实例数
             _gpuInstanceBuffer.SetData(_instanceBuffer.Raw, 0, 0, _count);
             propertyBlock.SetBuffer(ShaderPropertyID.muzzleInstances, _gpuInstanceBuffer);
-
-            if (_count > 0 && Time.realtimeSinceStartup > _nextDiagLogTime)
-            {
-                _nextDiagLogTime = Time.realtimeSinceStartup + 5f;
-                var inst = _instanceBuffer[0];
-                Log.Message($"[MF diag] queue '{Material?.name}' count={_count} first: color={inst.color} frame={inst.frame}");
-            }
         }
-
-        private float _nextDiagLogTime;
 
         public override void Dispose()
         {

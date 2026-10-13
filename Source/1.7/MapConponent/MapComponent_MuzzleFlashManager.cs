@@ -14,9 +14,6 @@ namespace MuzzleFlash
     {
         private readonly List<MuzzleFlashEntity> _entities;
 
-        private int _debugRendererID = -1;
-        private float _nextDiagLogTime;
-
         public MapComponent_MuzzleFlashManager(Map map) : base(map)
         {
             _entities = new List<MuzzleFlashEntity>();
@@ -60,37 +57,7 @@ namespace MuzzleFlash
                 AnimatedRenderManager.Default.AddInstance(entity.def.RenderID, entity.position, entity.rotation, entity.size, Color.white, entity.frame);
             }
 
-            if (Prefs.DevMode) DrawDebugOverlay();
-
             AnimatedRenderManager.Default.Draw();
-
-            if (Time.realtimeSinceStartup > _nextDiagLogTime)
-            {
-                _nextDiagLogTime = Time.realtimeSinceStartup + 5f;
-                Log.Message($"[MF diag] entities={_entities.Count}");
-            }
-        }
-
-        /// <summary>
-        /// DevMode 诊断: 在地图中心画 5 个测试四边形。
-        /// 品红 = 绘制管线正常但 SSBO 数据未到达; 品红偏绿/发白 = SSBO 数据到达; 完全不可见 = draw 未进入渲染管线。
-        /// </summary>
-        private void DrawDebugOverlay()
-        {
-            if (_debugRendererID < 0)
-            {
-                Material mat = AssetsManager.Default.GetOrCreateDebugMaterial();
-                if (mat == null) return;
-                _debugRendererID = AnimatedRenderManager.Default.GetRendererID(MeshPool.plane10, mat);
-            }
-
-            Vector3 center = new Vector3(map.Size.x * 0.5f, AltitudeLayer.VisEffects.AltitudeFor(), map.Size.z * 0.5f);
-            Vector3 scale = new Vector3(1.5f, 1f, 1.5f);
-            AnimatedRenderManager.Default.AddInstance(_debugRendererID, center, Quaternion.identity, scale, Color.white, 0f);
-            AnimatedRenderManager.Default.AddInstance(_debugRendererID, center + new Vector3( 2.5f, 0,  0), Quaternion.identity, scale, Color.white, 0f);
-            AnimatedRenderManager.Default.AddInstance(_debugRendererID, center + new Vector3(-2.5f, 0,  0), Quaternion.identity, scale, Color.white, 0f);
-            AnimatedRenderManager.Default.AddInstance(_debugRendererID, center + new Vector3( 0, 0,  2.5f), Quaternion.identity, scale, Color.white, 0f);
-            AnimatedRenderManager.Default.AddInstance(_debugRendererID, center + new Vector3( 0, 0, -2.5f), Quaternion.identity, scale, Color.white, 0f);
         }
 
         public void RegisterEntity(MuzzleFlashEntity entity)
