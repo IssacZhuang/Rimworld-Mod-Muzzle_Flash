@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using UnityEngine;
-using Unity.Jobs;
 
 namespace MuzzleFlash
 {
@@ -13,11 +12,11 @@ namespace MuzzleFlash
     {
         private readonly InstancedRenderer _renderer;
 
-        private NativeBuffer<Vector3> _positionBuffer;
-        private NativeBuffer<Quaternion> _rotationBuffer;
-        private NativeBuffer<Vector3> _scaleBuffer;
+        private readonly NativeBuffer<Vector3> _positionBuffer;
+        private readonly NativeBuffer<Quaternion> _rotationBuffer;
+        private readonly NativeBuffer<Vector3> _scaleBuffer;
 
-        private JobCalcMatricesUnsafe _jobMatrices;
+        private readonly CalcMatricesBatchTask _matricesTask;
 
         protected int _count;
 
@@ -25,7 +24,7 @@ namespace MuzzleFlash
 
         public Material Material => _renderer.Material;
 
-        public unsafe InstancedRenderQueue(Mesh mesh, Material mat)
+        public InstancedRenderQueue(Mesh mesh, Material mat)
         {
             if (mesh == null) throw ExceptionRendering.MeshIsMissing;
             if (mat == null) throw ExceptionRendering.MaterialIsMissing;
@@ -41,13 +40,9 @@ namespace MuzzleFlash
             _positionBuffer = new NativeBuffer<Vector3>(InstancedRenderer.MAX_COUNT_IN_BATCH);
             _rotationBuffer = new NativeBuffer<Quaternion>(InstancedRenderer.MAX_COUNT_IN_BATCH);
             _scaleBuffer = new NativeBuffer<Vector3>(InstancedRenderer.MAX_COUNT_IN_BATCH);
+            _matricesTask = new CalcMatricesBatchTask();
 
             _count = 0;
-        }
-
-        ~InstancedRenderQueue()
-        {
-            ClearBuffer();
         }
 
         public void Draw()
@@ -74,16 +69,12 @@ namespace MuzzleFlash
             if (start > 0) return; // TODO: warning
             fixed (Matrix4x4* ptr = matrices.Raw)
             {
-                _jobMatrices = new JobCalcMatricesUnsafe
-                {
-                    positions = _positionBuffer.Raw,
-                    rotations = _rotationBuffer.Raw,
-                    scales = _scaleBuffer.Raw,
-                    matrices = ptr
-                };
-                JobHandle handle = _jobMatrices.Schedule(length, 1);
+                // BeginCalc only dispatches above CalcMatricesBatchTask.MinParallelCount; the
+                // property update between Begin/End overlaps the worker fill, mirroring the
+                // old Schedule ... Complete pairing.
+                _matricesTask.BeginCalc(length, _positionBuffer, _rotationBuffer, _scaleBuffer, ptr);
                 UpdateMaterialProperty(propertyBlock);
-                handle.Complete();
+                _matricesTask.EndCalc();
                 ResetBuffer();
             }
 
@@ -96,8 +87,10 @@ namespace MuzzleFlash
 
         public virtual void Dispose()
         {
-            ClearBuffer();
-            GC.SuppressFinalize(this);
+            _positionBuffer.Dispose();
+            _rotationBuffer.Dispose();
+            _scaleBuffer.Dispose();
+            _matricesTask.Dispose();
         }
 
         private void ResetBuffer()
@@ -105,13 +98,6 @@ namespace MuzzleFlash
             _count = 0;
         }
 
-
-        private void ClearBuffer()
-        {
-            _positionBuffer.Dispose();
-            _rotationBuffer.Dispose();
-            _scaleBuffer.Dispose();
-        }
 
     }
 }

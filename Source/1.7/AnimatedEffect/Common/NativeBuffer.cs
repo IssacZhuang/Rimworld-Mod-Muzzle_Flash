@@ -5,7 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace MuzzleFlash
 {
-    public unsafe struct NativeBuffer<T> : IReadOnlyList<T>, IDisposable where T : unmanaged
+    // Class (not struct) on purpose: the HGlobal pointer must have a single owner.
+    // AutoDisposable frees the memory even if Dispose is never called explicitly.
+    public unsafe class NativeBuffer<T> : AutoDisposable, IReadOnlyList<T> where T : unmanaged
     {
         private void* _ptrBuffer;
         private readonly int _size;
@@ -45,14 +47,13 @@ namespace MuzzleFlash
             this._size = size;
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_ptrBuffer != null)
             {
                 UtilsUnsafe.Free(_ptrBuffer);
                 _ptrBuffer = null;
             }
-            GC.SuppressFinalize(this);
         }
 
         public IEnumerator<T> GetEnumerator()
