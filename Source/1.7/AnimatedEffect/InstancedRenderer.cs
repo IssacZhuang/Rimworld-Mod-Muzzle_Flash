@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace MuzzleFlash
 {
-    public delegate void SetDataForBatch(int start, int length, StructuredBuffer<Matrix4x4> matrices, MaterialPropertyBlock propertyBlock);
+    public delegate void SetDataForBatch(int start, int length, Matrix4x4[] matrices, MaterialPropertyBlock propertyBlock);
 
     public class InstancedRenderer
     {
@@ -18,7 +18,7 @@ namespace MuzzleFlash
         private Mesh _mesh;
         private Material _material;
 
-        private readonly StructuredBuffer<Matrix4x4> _matrixBuffer;
+        private readonly Matrix4x4[] _matrixBuffer;
         private readonly MaterialPropertyBlock _propertyBlock;
 
         public SetDataForBatch onUpdateData;
@@ -39,18 +39,18 @@ namespace MuzzleFlash
             }
         }
 
-        public StructuredBuffer<Matrix4x4> MatrixBuffer => _matrixBuffer;
+        public Matrix4x4[] MatrixBuffer => _matrixBuffer;
         public MaterialPropertyBlock PropertyBlock => _propertyBlock;
 
         public InstancedRenderer()
         {
-            _matrixBuffer = new StructuredBuffer<Matrix4x4>(MAX_COUNT_IN_BATCH);
+            _matrixBuffer = new Matrix4x4[MAX_COUNT_IN_BATCH];
             _propertyBlock = new MaterialPropertyBlock();
         }
 
         public InstancedRenderer(Mesh mesh, Material material)
         {
-            _matrixBuffer = new StructuredBuffer<Matrix4x4>(MAX_COUNT_IN_BATCH);
+            _matrixBuffer = new Matrix4x4[MAX_COUNT_IN_BATCH];
             _propertyBlock = new MaterialPropertyBlock();
 
             Mesh = mesh;
@@ -59,7 +59,7 @@ namespace MuzzleFlash
 
         public InstancedRenderer(Mesh mesh, Shader shader)
         {
-            _matrixBuffer = new StructuredBuffer<Matrix4x4>(MAX_COUNT_IN_BATCH);
+            _matrixBuffer = new Matrix4x4[MAX_COUNT_IN_BATCH];
             _propertyBlock = new MaterialPropertyBlock();
 
             Mesh = mesh;
@@ -72,14 +72,14 @@ namespace MuzzleFlash
             for (int i = 0; i < fullBatchLength; i++)
             {
                 onUpdateData?.Invoke(i * MAX_COUNT_IN_BATCH, MAX_COUNT_IN_BATCH, _matrixBuffer, _propertyBlock);
-                Graphics.DrawMeshInstanced(Mesh, 0, Material, _matrixBuffer.Raw, MAX_COUNT_IN_BATCH, _propertyBlock);
+                Graphics.DrawMeshInstanced(Mesh, 0, Material, _matrixBuffer, MAX_COUNT_IN_BATCH, _propertyBlock);
             }
 
             int remain = count % MAX_COUNT_IN_BATCH;
             if (remain > 0)
             {
                 onUpdateData?.Invoke(fullBatchLength * MAX_COUNT_IN_BATCH, remain, _matrixBuffer, _propertyBlock);
-                Graphics.DrawMeshInstanced(Mesh, 0, Material, _matrixBuffer.Raw, remain, PropertyBlock);
+                Graphics.DrawMeshInstanced(Mesh, 0, Material, _matrixBuffer, remain, PropertyBlock);
             }
             PropertyBlock.Clear();
         }

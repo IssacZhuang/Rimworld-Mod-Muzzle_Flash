@@ -17,12 +17,12 @@ namespace MuzzleFlash
     /// </summary>
     public class AnimatedRenderQueue : InstancedRenderQueue
     {
-        private readonly StructuredBuffer<MuzzleInstance> _instanceBuffer;
+        private readonly MuzzleInstance[] _instanceBuffer;
         private readonly ComputeBuffer _gpuInstanceBuffer;
 
         public AnimatedRenderQueue(Mesh mesh, Material mat) : base(mesh, mat)
         {
-            _instanceBuffer = new StructuredBuffer<MuzzleInstance>(InstancedRenderer.MAX_COUNT_IN_BATCH);
+            _instanceBuffer = new MuzzleInstance[InstancedRenderer.MAX_COUNT_IN_BATCH];
             _gpuInstanceBuffer = new ComputeBuffer(InstancedRenderer.MAX_COUNT_IN_BATCH, MuzzleInstance.Stride, ComputeBufferType.Structured);
         }
 
@@ -35,7 +35,7 @@ namespace MuzzleFlash
         protected override void UpdateMaterialProperty(MaterialPropertyBlock propertyBlock)
         {
             // UpdateData 在 ResetBuffer 之前调用, 此时 _count 即本批实例数
-            _gpuInstanceBuffer.SetData(_instanceBuffer.Raw, 0, 0, _count);
+            _gpuInstanceBuffer.SetData(_instanceBuffer, 0, 0, _count);
             propertyBlock.SetBuffer(ShaderPropertyID.muzzleInstances, _gpuInstanceBuffer);
         }
 

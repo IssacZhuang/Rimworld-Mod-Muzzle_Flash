@@ -64,10 +64,10 @@ namespace MuzzleFlash
             _count++;
         }
 
-        protected unsafe void UpdateData(int start, int length, StructuredBuffer<Matrix4x4> matrices, MaterialPropertyBlock propertyBlock)
+        protected unsafe void UpdateData(int start, int length, Matrix4x4[] matrices, MaterialPropertyBlock propertyBlock)
         {
             if (start > 0) return; // TODO: warning
-            fixed (Matrix4x4* ptr = matrices.Raw)
+            fixed (Matrix4x4* ptr = matrices)
             {
                 // BeginCalc only dispatches above CalcMatricesBatchTask.MinParallelCount; the
                 // property update between Begin/End overlaps the worker fill, mirroring the
