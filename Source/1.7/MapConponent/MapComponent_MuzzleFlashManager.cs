@@ -54,7 +54,7 @@ namespace MuzzleFlash
             for (int i = 0; i < _entities.Count; i++)
             {
                 var entity = _entities[i];
-                AnimatedRenderManager.Default.AddInstance(entity.def.RenderID, entity.position, entity.rotation, entity.size, Color.white, entity.frame);
+                AnimatedRenderManager.Default.AddInstance(entity.def.RenderID, entity.position, entity.rotCos, entity.rotSin, entity.size, Color.white, entity.frame);
             }
 
             AnimatedRenderManager.Default.Draw();

@@ -29,6 +29,10 @@
       <HintPath>$(GameDir)\UnityStubs.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Waylith">
+      <HintPath>$(GameDir)\Waylith.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>

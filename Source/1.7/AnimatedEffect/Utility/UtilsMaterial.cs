@@ -10,20 +10,11 @@ namespace MuzzleFlash
 {
     public static class UtilsMaterial
     {
-        public static Material CreateMaterial(Shader shader, bool instanced = false)
+        // RimWorld 1.7 (Waylith): enableInstancing is a dead store in the Unity compat
+        // layer - instancing happens whenever an instanced draw API is called.
+        public static Material CreateMaterial(Shader shader)
         {
-            Material material = new Material(shader)
-            {
-                enableInstancing = instanced
-            };
-            return material;
-        }
-
-        public static Material CreateMaterial(Shader shader, Texture2D mainTexture, bool instanced = false)
-        {
-            Material material = CreateMaterial(shader, instanced);
-            material.mainTexture = mainTexture;
-            return material;
+            return new Material(shader);
         }
     }
 }

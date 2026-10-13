@@ -52,13 +52,13 @@ namespace MuzzleFlash
             }
         }
 
-        public void AddInstance(int rendererID, Vector3 position, Quaternion rotattion, Vector3 scale)
+        public void AddInstance(int rendererID, Vector3 position, float rotCos, float rotSin, Vector3 scale)
         {
             if (rendererID < -1 || rendererID >= _renderQueues.Count)
             {
                 throw ExceptionRendering.InvalidRenderId(0, _renderQueues.Count, rendererID);
             }
-            _renderQueues[rendererID].AddInstance(position, rotattion, scale);
+            _renderQueues[rendererID].AddInstance(position, rotCos, rotSin, scale);
         }
 
         public void Draw()

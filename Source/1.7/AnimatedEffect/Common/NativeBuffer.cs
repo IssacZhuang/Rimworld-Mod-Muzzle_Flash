@@ -2,16 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace MuzzleFlash
 {
-    // Class (not struct) on purpose: the HGlobal pointer must have a single owner.
+    // Class (not struct) on purpose: the native pointer must have a single owner.
     // AutoDisposable frees the memory even if Dispose is never called explicitly.
     public unsafe class NativeBuffer<T> : AutoDisposable, IReadOnlyList<T> where T : unmanaged
     {
         private void* _ptrBuffer;
         private readonly int _size;
-        private static readonly int _stride = UtilsUnsafe.SizeOf<T>();
+        private static readonly int _stride = sizeof(T);
 
         public int Length => _size;
 
@@ -43,7 +44,7 @@ namespace MuzzleFlash
         public NativeBuffer(int size)
         {
             if (size <= 0) throw new IndexOutOfRangeException();
-            _ptrBuffer = UtilsUnsafe.Alloc(size * _stride);
+            _ptrBuffer = NativeMemory.Alloc((nuint)(size * _stride));
             this._size = size;
         }
 
@@ -51,7 +52,7 @@ namespace MuzzleFlash
         {
             if (_ptrBuffer != null)
             {
-                UtilsUnsafe.Free(_ptrBuffer);
+                NativeMemory.Free(_ptrBuffer);
                 _ptrBuffer = null;
             }
         }

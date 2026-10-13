@@ -26,10 +26,10 @@ namespace MuzzleFlash
             _gpuInstanceBuffer = new ComputeBuffer(InstancedRenderer.MAX_COUNT_IN_BATCH, MuzzleInstance.Stride, ComputeBufferType.Structured);
         }
 
-        public void AddInstance(Vector3 position, Quaternion rotation, Vector3 scale, Color color, float frame)
+        public void AddInstance(Vector3 position, float rotCos, float rotSin, Vector3 scale, Color color, float frame)
         {
             _instanceBuffer[_count] = new MuzzleInstance(color, frame);
-            AddInstance(position, rotation, scale);
+            AddInstance(position, rotCos, rotSin, scale);
         }
 
         protected override void UpdateMaterialProperty(MaterialPropertyBlock propertyBlock)

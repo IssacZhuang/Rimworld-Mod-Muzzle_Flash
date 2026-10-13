@@ -32,11 +32,7 @@ namespace MuzzleFlash
         public Material Material
         {
             get { return _material; }
-            set
-            {
-                if (!value.enableInstancing) throw ExceptionRendering.MaterialNotInstanced;
-                _material = value;
-            }
+            set { _material = value; }
         }
 
         public Matrix4x4[] MatrixBuffer => _matrixBuffer;
@@ -63,7 +59,7 @@ namespace MuzzleFlash
             _propertyBlock = new MaterialPropertyBlock();
 
             Mesh = mesh;
-            Material = UtilsMaterial.CreateMaterial(shader, true);
+            Material = UtilsMaterial.CreateMaterial(shader);
         }
 
         public void Draw(int count)

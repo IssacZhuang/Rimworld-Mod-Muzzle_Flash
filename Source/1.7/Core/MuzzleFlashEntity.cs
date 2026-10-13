@@ -20,7 +20,10 @@ namespace MuzzleFlash
         public float frame;
 
         public Vector3 position;
-        public Quaternion rotation;
+        // Yaw rotation about Vector3.up, precomputed at spawn: building the TRS
+        // matrix in CalcMatricesJob only needs cos/sin of the angle.
+        public readonly float rotCos;
+        public readonly float rotSin;
         public Vector3 size;
 
         public int LifeTick => _lifeTicks;
@@ -31,7 +34,9 @@ namespace MuzzleFlash
             _lifeTicks = def.duration;
             this.def = def;
             position = pos;
-            rotation = Quaternion.AngleAxis((angle - 90f) % 360f, Vector3.up);
+            float rad = ((angle - 90f) % 360f) * Mathf.Deg2Rad;
+            rotCos = Mathf.Cos(rad);
+            rotSin = Mathf.Sin(rad);
             size = new Vector3(size2D.x, 1f, size2D.y);
             frame = Mathf.Floor(Rand.Range(0, def.splits.y)) * (def.framesPerAnimation);
         }

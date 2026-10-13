@@ -79,10 +79,11 @@ namespace MuzzleFlash
                 return _materials[i];
             }
 
-            Material result = UtilsMaterial.CreateMaterial(shader, true);
+            Material result = UtilsMaterial.CreateMaterial(shader);
             result.mainTexture = texture;
             result.SetVector(ShaderPropertyID.splits, splits);
             result.SetFloat(ShaderPropertyID.lightIntensity, lightIntensity);
+            _materials.Add(result);
             return result;
         }
 
