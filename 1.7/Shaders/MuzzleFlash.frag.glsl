@@ -1,14 +1,16 @@
 #version 450
 
 #ifdef INSTANCED
-// Waylith 从片元着色器提取材质绑定，顶点阶段使用的缓冲区也必须在此声明。
+// Waylith extracts material bindings from the fragment shader, so buffers used by the
+// vertex stage must be declared here as well.
 #include "InstanceTransforms.glsl"
 
 layout(location = 1) flat in int vInstanceIndex;
 
-// 与 C# MuzzleInstance 一一对应, stride 32 字节。
-// std430 中 vec3 成员对齐为 16 字节, 直接写 vec3 _padding 会把 stride 撑到 48,
-// 因此 padding 用 3 个 float 表达 (C# 侧为 float frame + Vector3 padding, 布局等价)。
+// Mirrors the C# MuzzleInstance struct, stride 32 bytes.
+// A vec3 member is 16-byte aligned in std430, so a real vec3 _padding would inflate the
+// stride to 48; the padding is therefore expressed as 3 floats (C# side: float frame +
+// Vector3 padding, equivalent layout).
 struct MuzzleInstance
 {
     vec4 color;
@@ -32,7 +34,7 @@ layout(set = 2, binding = 0) uniform MaterialUniforms
     vec4 _Color;           // @color @default = vec4(1.0, 1.0, 1.0, 1.0)
     vec4 _MainTex_ST;      // @default = vec4(0.0, 0.0, 1.0, 1.0)
     float _LightIntensity; // @default = 1.0
-    vec4 _Splits;          // @default = vec4(5.0, 5.0, 3.0, 5.0)  x=列数 y=行数
+    vec4 _Splits;          // @default = vec4(5.0, 5.0, 3.0, 5.0)  x=columns y=rows
 } uMaterial;
 
 layout(set = 2, binding = 1) uniform sampler2D _MainTex;
@@ -45,7 +47,7 @@ float InstanceFrame() { return 0.0; }
 vec4 InstanceTint()   { return uMaterial._Color; }
 #endif
 
-// 精灵图集采样: stage 为帧序号
+// Sprite atlas sampling: stage is the frame index
 vec4 shot(vec2 uv, float dx, float dy, int stage)
 {
     return texture(_MainTex, vec2(
@@ -61,7 +63,7 @@ void main()
     float dx = 1.0 / float(cols);
     float dy = 1.0 / float(rows);
 
-    // frame 为浮点帧号, 对相邻两帧插值实现平滑过渡
+    // frame is a fractional frame number; blend neighbouring frames for smooth playback
     float stage = mod(InstanceFrame(), float(stages));
     int current = int(floor(stage));
     int next = int(mod(stage + 1.0, float(stages)));

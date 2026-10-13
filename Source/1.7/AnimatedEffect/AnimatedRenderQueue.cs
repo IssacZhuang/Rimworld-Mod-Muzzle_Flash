@@ -11,9 +11,10 @@ using MuzzleFlash;
 namespace MuzzleFlash
 {
     /// <summary>
-    /// RimWorld 1.7 (Waylith): 每实例数据(color+frame)打包进自定义结构体 MuzzleInstance，
-    /// 经 ComputeBuffer(Structured) 上传 GPU，由 shader 中的 _MuzzleInstances SSBO 消费，
-    /// 不再使用 MaterialPropertyBlock 的逐实例数组属性。
+    /// RimWorld 1.7 (Waylith): per-instance data (color + frame) is packed into the
+    /// custom struct MuzzleInstance, uploaded via ComputeBuffer(Structured) and consumed
+    /// by the _MuzzleInstances SSBO in the shader, instead of per-instance array
+    /// properties on a MaterialPropertyBlock.
     /// </summary>
     public class AnimatedRenderQueue : InstancedRenderQueue
     {
@@ -34,7 +35,7 @@ namespace MuzzleFlash
 
         protected override void UpdateMaterialProperty(MaterialPropertyBlock propertyBlock)
         {
-            // UpdateData 在 ResetBuffer 之前调用, 此时 _count 即本批实例数
+            // UpdateData runs before ResetBuffer, so _count still equals this batch's instance count
             _gpuInstanceBuffer.SetData(_instanceBuffer, 0, 0, _count);
             propertyBlock.SetBuffer(ShaderPropertyID.muzzleInstances, _gpuInstanceBuffer);
         }

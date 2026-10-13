@@ -2,8 +2,8 @@
 
 <Defs>
 
-  <!-- 1.7 (Waylith): 由引擎从 1.7/Shaders 加载 GLSL 源码并编译,
-       取代 1.4-1.6 的 Unity AssetBundle 预编译 shader -->
+  <!-- 1.7 (Waylith): the engine loads GLSL sources from 1.7/Shaders and compiles them,
+       replacing the precompiled Unity AssetBundle shaders of 1.4-1.6 -->
   <ShaderDef>
     <defName>MuzzleFlashAnimatedAdditive</defName>
     <shaderProgram>

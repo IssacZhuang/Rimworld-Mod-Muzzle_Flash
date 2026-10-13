@@ -7,8 +7,8 @@ using Verse;
 namespace MuzzleFlash
 {
     /// <summary>
-    /// RimWorld 1.7 (Waylith): shader 改由 ShaderDef 加载（Defs/ShaderDefs + Shaders/*.glsl），
-    /// 不再使用 Unity AssetBundle 和按平台预编译的 shader。
+    /// RimWorld 1.7 (Waylith): shaders are loaded through ShaderDef (Defs/ShaderDefs +
+    /// Shaders/*.glsl); Unity AssetBundles and per-platform precompiled shaders are gone.
     /// </summary>
     public class AssetsManager
     {

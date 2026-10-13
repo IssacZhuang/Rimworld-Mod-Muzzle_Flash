@@ -10,8 +10,8 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <!-- RimWorld 1.7 (Waylith): 直接引用游戏根目录程序集。本 mod 位于 <game>/Mods 下,
-       可用 /p:GameDir=... 覆盖游戏目录。 -->
+  <!-- RimWorld 1.7 (Waylith): reference assemblies straight from the game root.
+       This mod lives under <game>/Mods; override the game dir with /p:GameDir=... -->
   <PropertyGroup>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../../..</GameDir>
   </PropertyGroup>

@@ -52,7 +52,7 @@ namespace MuzzleFlash
         {
             Shader shader = AssetsManager.Default.ShaderAnimatedAdditiveInstanced;
             Material mat = AssetsManager.Default.GetMaterial(shader, Texture, splits, lightIntensity);
-            mat.renderQueue = 3200; // 1.6: RenderQueue.Transparent(3000) + 200, 1.7 无 RenderQueue 枚举
+            mat.renderQueue = 3200; // 1.6: RenderQueue.Transparent(3000) + 200; 1.7 has no RenderQueue enum
             _renderID = AnimatedRenderManager.Default.GetRendererID(MeshPool.plane10, mat);
         }
     }

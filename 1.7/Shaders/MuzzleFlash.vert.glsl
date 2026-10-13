@@ -6,7 +6,7 @@
 layout(location = 1) flat out int vInstanceIndex;
 #endif
 
-// MeshPool.plane10 顶点布局, 与本体 Mote.vert.glsl 相同的输入约定
+// MeshPool.plane10 vertex layout, same input convention as the base game's Mote.vert.glsl
 layout(location = 0) in vec3 inPosition;  // @vertex Position required
 layout(location = 3) in vec4 inUv0;       // @vertex TexCoord0 optional @default = vec4(0.0)
 

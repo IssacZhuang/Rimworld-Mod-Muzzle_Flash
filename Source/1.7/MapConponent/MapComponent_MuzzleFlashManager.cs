@@ -44,9 +44,9 @@ namespace MuzzleFlash
             }
         }
 
-        // RimWorld 1.7 (Waylith): instanced draw 必须在 MapComponentDraw 阶段提交。
-        // 参照本体 VacuumComponent.MapComponentDraw 的官方用法,
-        // 在 MapComponentUpdate(逻辑帧)期间提交的 draw 不会进入渲染管线。
+        // RimWorld 1.7 (Waylith): instanced draws must be submitted during MapComponentDraw.
+        // Follows the official pattern in VacuumComponent.MapComponentDraw; draws submitted
+        // during MapComponentUpdate (logic tick) never reach the render pipeline.
         public override void MapComponentDraw()
         {
             if (WorldRendererUtility.WorldRendered || Find.CurrentMap != this.map) return;
